@@ -1,5 +1,5 @@
 // ===== 설정 (여기만 고치면 됨) =====
-const SHEET_URL = "";                                  // 구글 앱스 스크립트 웹앱 주소 (비워 두면 전송 안 함)
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxT5-lAhEZetpBkVQdGbriYU2ClTeGtx9-WRPFuG13NzObmqOP5IzRPpEX0-KajcGU2TA/exec";                                // 구글 앱스 스크립트 웹앱 주소 (비워 두면 전송 안 함)
 const MINUTES = { 100: 10, 300: 20, 500: 30 };         // 문항 수별 제한 시간(분)
 const CHOICE_MIN = 5, CHOICE_MAX = 7;                  // 보기 개수 범위
 const LEVEL_NAME = { basic: "기본형", adv: "심화형" };
