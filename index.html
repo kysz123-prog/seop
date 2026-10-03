@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다담 빈칸 연습</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <section id="start" class="view">
+    <div class="card start">
+      <div class="logo">다담</div>
+      <h1>빈칸 연습</h1>
+      <p class="lead">문단을 읽고 빈칸에 알맞은 말을 고르세요.</p>
+      <label class="lbl">이름</label>
+      <input id="name" type="text" placeholder="이름을 입력하세요" autocomplete="off" maxlength="20">
+      <label class="lbl">난이도</label>
+      <div class="seg" id="levelGroup">
+        <button data-level="basic">기본형</button>
+        <button data-level="adv">심화형</button>
+      </div>
+      <label class="lbl">빈칸 수</label>
+      <div class="seg" id="countGroup">
+        <button data-count="100">100개</button>
+        <button data-count="300">300개</button>
+        <button data-count="500">500개</button>
+      </div>
+      <p id="info" class="note"></p>
+      <button id="go" class="primary" disabled>시작하기</button>
+    </div>
+  </section>
+
+  <section id="quiz" class="view" hidden>
+    <header class="top">
+      <span id="progress"></span>
+      <div class="track"><i id="bar"></i></div>
+      <span id="timer"></span>
+    </header>
+    <article id="sentence" class="card passage"></article>
+    <div class="dock">
+      <div class="dock-in">
+        <div id="hint"></div>
+        <div id="choices"></div>
+        <button id="next" class="primary" disabled>다음</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" class="view" hidden>
+    <div class="card score-card">
+      <div id="ring"><div id="score"></div></div>
+      <p id="sub" class="note"></p>
+    </div>
+    <h2 id="wrongTitle">틀린 문장</h2>
+    <div id="wrongList"></div>
+    <button id="again" class="primary">다시 풀기</button>
+  </section>
+</main>
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
