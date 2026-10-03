@@ -41,6 +41,8 @@ function layout(t) {
   flush();
   return out.join("");
 }
+const p2 = n => String(n).padStart(2, "0");
+const stamp = d => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;  // 시트가 날짜·시각으로 알아보는 형식
 const fmt = sec => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
 
 // ===== 데이터 불러오기 =====
@@ -181,7 +183,7 @@ function finish(timedOut) {
     : '<p class="note">틀린 문제가 없습니다.</p>';
   show("result"); window.scrollTo(0, 0);
   sendResult({
-    time: new Date().toLocaleString("ko-KR"), name: $("name").value.trim(), level: LEVEL_NAME[level],
+    time: stamp(new Date()), name: $("name").value.trim(), level: LEVEL_NAME[level],
     total, score: right, solved, wrong: wrong.map(w => w.q.id).join(","), seconds: sec, timedOut: timedOut ? "Y" : "N"
   });
 }
