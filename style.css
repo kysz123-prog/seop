@@ -14,7 +14,7 @@ button { font-family: inherit; }
 
 /* 시작 */
 .start { margin-top: 8vh; padding: 36px 28px 28px; }
-.logo { width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, #16a673, var(--g-d)); color: #fff; font-weight: 800; font-size: 16px; display: grid; place-items: center; margin: 0 auto 14px; box-shadow: 0 6px 16px rgba(15,138,95,.3); }
+.logo { width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, #16a673, var(--g-d)); color: #fff; font-weight: 800; font-size: 24px; display: grid; place-items: center; margin: 0 auto 14px; box-shadow: 0 6px 16px rgba(15,138,95,.3); }
 h1 { font-size: 26px; font-weight: 800; text-align: center; margin: 0; }
 .lead { text-align: center; color: var(--sub); margin: 6px 0 26px; font-size: 15px; }
 .lbl { display: block; font-size: 13px; font-weight: 700; color: var(--sub); margin: 0 0 8px 2px; }
