@@ -256,17 +256,42 @@ const GROUPS = [
   { words: ["해", "하지", "해?", "하지?", "하군"] }
 ];
 
+const ALL_HON_ENDINGS = [
+  "합니다", "합니까?", "하십시오", "하시지요",
+  "하오", "하오?", "하구려", "합시다", "하는구려",
+  "하네", "함세", "하는가?", "하나?", "하게", "하세", "하는구먼",
+  "한다", "하니?", "하느냐?", "해라", "하자", "하는구나",
+  "해요", "하지요", "해요?", "하지요?", "하군요",
+  "해", "하지", "해?", "하지?", "하군"
+];
+const HON_GRADES = ["하십시오체", "하오체", "하게체", "해라체", "해요체", "해체"];
+const HON_TYPES = ["격식체", "비격식체"];
+
 function groupMates(a, q) {
   const g = GROUPS.find(g => g.words.some(w => norm(w) === norm(a)) && (!g.when || g.when.test(q.text)));
   return g ? g.words.filter(w => norm(w) !== norm(a)) : [];
 }
 
 function makeChoices(q, all) {        // 빈칸마다 헷갈리는 보기 세트 생성 (6~8지선다)
+  const isHonQ = q.text.includes("상대 높임");
   const used = new Set(q.answers.map(norm));
-  const pool = nearPool(all, all.indexOf(q), used);
+  const defaultPool = nearPool(all, all.indexOf(q), used);
+
   return q.answers.map(a => {
-    const n = CHOICE_MIN + Math.floor(Math.random() * (CHOICE_MAX - CHOICE_MIN + 1));   // 6~8개
-    const mates = shuffle(groupMates(a, q)).slice(0, n - 1), have = new Set(mates.map(norm));
+    const na = norm(a);
+    if (na === "×" || na === "x") return shuffle(["×", "○", "△", "-", "없음"]);
+    if (HON_TYPES.some(w => norm(w) === na)) return shuffle(HON_TYPES.slice());
+    if (HON_GRADES.some(w => norm(w) === na)) return shuffle(HON_GRADES.slice());
+
+    // 상대 높임 종결 어미는 오직 종결 어미 풀에서만 오답을 보충(엉뚱한 품사 노출 방지)
+    const isHonEnding = ALL_HON_ENDINGS.some(w => norm(w) === na) || isHonQ;
+    const pool = isHonEnding
+      ? ALL_HON_ENDINGS.filter(w => norm(w) !== na)
+      : defaultPool;
+
+    const n = Math.min(CHOICE_MIN + Math.floor(Math.random() * (CHOICE_MAX - CHOICE_MIN + 1)), pool.length + 1);
+    const mates = shuffle(groupMates(a, q)).slice(0, n - 1);
+    const have = new Set([na, ...mates.map(norm)]);
     const wrong = [...mates, ...shuffle(pool).filter(w => !have.has(norm(w))).slice(0, n - 1 - mates.length)];
     return shuffle([a, ...wrong]);
   });
