@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>표 바로잡기 샘플 비교</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root {
+  --g: #0f8a5f; --g-d: #0a6b49; --g-s: #e7f5ee; --g-m: #c5e6d5;
+  --ink: #17221d; --sub: #5f6f67; --line: #dbe4df; --bg: #f6f8f7; --card: #fff; --red: #e03131;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px 16px; font-family: Pretendard, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+.container { max-width: 840px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 24px; text-align: center; }
+.card { background: #fff; border-radius: 18px; border: 1px solid var(--line); padding: 24px 20px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,.04); }
+.badge { display: inline-block; font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 8px; margin-bottom: 12px; }
+.badge.bad { background: #fee2e2; color: #dc2626; }
+.badge.good { background: var(--g-s); color: var(--g-d); }
+h2 { font-size: 17px; font-weight: 800; color: var(--g-d); margin: 0 0 12px; }
+h3 { font-size: 15px; font-weight: 700; color: var(--g); margin: 0 0 14px; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; line-height: 1.6; table-layout: fixed; }
+th, td { border: 1px solid var(--line); padding: 9px 8px; text-align: center; vertical-align: middle; word-break: keep-all; }
+th { background: var(--g-s); color: var(--g-d); font-weight: 700; }
+td { background: #fff; }
+.blank { display: inline-block; min-width: 48px; padding: 2px 6px; border-radius: 7px; background: #f0f3f1; border: 1.5px dashed #b9c8c0; color: #9aaba2; font-weight: 700; }
+.blank.now { border: 2px solid var(--g); background: #fff; color: var(--g); box-shadow: 0 0 0 3px var(--g-s); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📊 상대 높임법 종결법 표 바로잡기 전/후 비교</h1>
+
+  <div class="card">
+    <span class="badge bad">❌ 수정 전 (셀 병합 무시로 열이 왼쪽으로 밀려 뒤죽박죽인 상태)</span>
+    <h2>1. 높임법</h2>
+    <h3>② 상대 높임이 실현된 문장 종결법</h3>
+    <table>
+      <tr><th>구분</th><th>등급</th><th>평서문</th><th>의문문</th><th>명령문</th><th>청유문</th><th>감탄문</th></tr>
+      <tr><td>격식체</td><td>하십시오체</td><td>합니다</td><td>합니까?</td><td>하십시오</td><td>(하시지요)</td><td>×</td></tr>
+      <tr><td>하오체</td><td>하오</td><td>하오?</td><td>하오 / 하구려</td><td>합시다</td><td>하는구려</td><td></td></tr>
+      <tr><td>하게체</td><td>하네 / 함세</td><td>하는가? / 하나?</td><td>하게</td><td>하세</td><td><span class="blank now">①</span></td><td></td></tr>
+      <tr><td><span class="blank">②</span></td><td><span class="blank">③</span></td><td><span class="blank">④</span></td><td><span class="blank">⑤</span></td><td><span class="blank">⑥</span></td><td>하는구나</td><td></td></tr>
+      <tr><td>비격식체</td><td>해요체</td><td>해요 / 하지요</td><td>해요? / 하지요?</td><td>해요 / 하지요</td><td>해요 / 하지요</td><td>해요 / 하군요</td></tr>
+      <tr><td>해체</td><td>해 / 하지</td><td>해? / 하지?</td><td>해 / 하지</td><td>해 / 하지</td><td>해 / 하군</td><td></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <span class="badge good">✅ 바로잡은 후 (세로 병합 완벽 반영 + 열 위치 100% 정렬)</span>
+    <h2>1. 높임법</h2>
+    <h3>② 상대 높임이 실현된 문장 종결법</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 13%;">구분</th>
+          <th style="width: 14%;">등급</th>
+          <th style="width: 14%;">평서문</th>
+          <th style="width: 15%;">의문문</th>
+          <th style="width: 14%;">명령문</th>
+          <th style="width: 15%;">청유문</th>
+          <th style="width: 15%;">감탄문</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="4" style="background:#fafdfb; font-weight:700; color:var(--g-d);">격식체</td>
+          <td>하십시오체</td>
+          <td>합니다</td>
+          <td>합니까?</td>
+          <td>하십시오</td>
+          <td>(하시지요)</td>
+          <td>×</td>
+        </tr>
+        <tr>
+          <td>하오체</td>
+          <td>하오</td>
+          <td>하오?</td>
+          <td>하오 / 하구려</td>
+          <td>합시다</td>
+          <td>하는구려</td>
+        </tr>
+        <tr>
+          <td>하게체</td>
+          <td>하네 / 함세</td>
+          <td>하는가? / 하나?</td>
+          <td>하게</td>
+          <td>하세</td>
+          <td><span class="blank now">①</span></td>
+        </tr>
+        <tr>
+          <td><span class="blank">②</span></td>
+          <td><span class="blank">③</span></td>
+          <td><span class="blank">④</span></td>
+          <td><span class="blank">⑤</span></td>
+          <td><span class="blank">⑥</span></td>
+          <td>하는구나</td>
+        </tr>
+        <tr>
+          <td rowspan="2" style="background:#fafdfb; font-weight:700; color:var(--g-d);">비격식체</td>
+          <td>해요체</td>
+          <td>해요 / 하지요</td>
+          <td>해요? / 하지요?</td>
+          <td>해요 / 하지요</td>
+          <td>해요 / 하지요</td>
+          <td>해요 / 하군요</td>
+        </tr>
+        <tr>
+          <td>해체</td>
+          <td>해 / 하지</td>
+          <td>해? / 하지?</td>
+          <td>해 / 하지</td>
+          <td>해 / 하지</td>
+          <td>해 / 하군</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

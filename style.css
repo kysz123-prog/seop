@@ -40,9 +40,10 @@ button.primary:disabled { background: #d5ddd9; color: #fff; cursor: default; }
 .passage p.h { font-weight: 800; color: var(--g-d); margin-top: 4px; }
 html, body { overflow-x: hidden; }
 .passage { overflow-wrap: anywhere; }
-.passage table { table-layout: fixed; width: 100%; border-collapse: collapse; margin: 10px 0 12px; font-size: 15px; line-height: 1.7; }
-.passage th, .passage td { border: 1px solid var(--line); padding: 8px 10px; vertical-align: top; text-align: left; }
+.passage table { table-layout: fixed; width: 100%; border-collapse: collapse; margin: 10px 0 12px; font-size: 14px; line-height: 1.6; }
+.passage th, .passage td { border: 1px solid var(--line); padding: 8px 6px; vertical-align: middle; text-align: center; word-break: keep-all; }
 .passage th { background: var(--g-s); color: var(--g-d); font-weight: 700; }
+.passage td[rowspan] { background: #fafdfb; font-weight: 700; color: var(--g-d); }
 .blank { display: inline-block; min-width: 64px; padding: 0 8px; margin: 0 2px; border-radius: 8px; background: #f0f3f1; border: 1.5px dashed #b9c8c0; color: #9aaba2; text-align: center; font-weight: 700; line-height: 1.6; cursor: pointer; transition: .15s; }
 .passage td .blank, .passage th .blank { min-width: 2.4em; padding: 0 4px; margin: 1px 0; }
 @media (max-width: 560px) {

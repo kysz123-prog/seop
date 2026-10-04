@@ -27,13 +27,52 @@ const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&
 const norm = s => s.replace(/\s+/g, "");
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const show = id => ["start", "quiz", "result", "notes"].forEach(v => $(v).hidden = v !== id);
-// 문단 글 → HTML: \t 있는 줄은 표의 한 행(첫 행은 머리글), 소제목 줄은 굵게. {{blank}} 자리는 그대로 둠
+// 문단 글 → HTML: \t 있는 줄은 표의 한 행(첫 행은 머리글), 소제목 줄은 굵게. 세로(^)·가로(<) 병합 지원.
 const isHead = l => l.length < 40 && !l.includes("{{blank}}") && /^(\d+\.|\(\d+\)|[①-⑳])\s/.test(l);
 function layout(t) {
   const out = []; let rows = [];
   const flush = () => {
     if (!rows.length) return;
-    out.push("<table>" + rows.map((r, i) => "<tr>" + r.split("\t").map(c => i ? `<td>${c}</td>` : `<th>${c}</th>`).join("") + "</tr>").join("") + "</table>");
+    const grid = rows.map(r => r.split("\t").map(c => ({ text: c, rowspan: 1, colspan: 1, skip: false })));
+    const R = grid.length;
+    for (let r = 0; r < R; r++) {
+      const C = grid[r].length;
+      for (let c = 0; c < C; c++) {
+        const val = grid[r][c].text.trim();
+        if (val === "^") {
+          grid[r][c].skip = true;
+          for (let pr = r - 1; pr >= 0; pr--) {
+            if (!grid[pr][c].skip) {
+              grid[pr][c].rowspan += 1;
+              break;
+            }
+          }
+        } else if (val === "<") {
+          grid[r][c].skip = true;
+          for (let pc = c - 1; pc >= 0; pc--) {
+            if (!grid[r][pc].skip) {
+              grid[r][pc].colspan += 1;
+              break;
+            }
+          }
+        }
+      }
+    }
+    let html = "<table>";
+    for (let r = 0; r < R; r++) {
+      html += "<tr>";
+      const tag = r === 0 ? "th" : "td";
+      for (let c = 0; c < grid[r].length; c++) {
+        const cell = grid[r][c];
+        if (cell.skip) continue;
+        const attr = (cell.rowspan > 1 ? ` rowspan="${cell.rowspan}"` : "") +
+                     (cell.colspan > 1 ? ` colspan="${cell.colspan}"` : "");
+        html += `<${tag}${attr}>${cell.text}</${tag}>`;
+      }
+      html += "</tr>";
+    }
+    html += "</table>";
+    out.push(html);
     rows = [];
   };
   for (const l of esc(t).split("\n")) {
