@@ -92,12 +92,28 @@ function nearPool(all, qi, used) {
     if (pool.length >= CHOICE_MAX * 2 || r >= all.length) return pool;
   }
 }
+// 같은 범주 묶음: 정답이 여기 들어 있으면 같은 묶음의 다른 말을 먼저 오답으로 넣음(when이 있으면 문항 글에 그 말이 있을 때만)
+const GROUPS = [
+  { words: ["통사적 합성어", "비통사적 합성어"] },
+  { words: ["통사적", "비통사적"] },
+  { words: ["대등 합성어", "종속 합성어", "융합 합성어"] },
+  { words: ["명사", "대명사", "수사", "동사", "형용사", "관형사", "부사", "조사", "감탄사"] },
+  { words: ["체언", "용언", "수식언", "관계언", "독립언"] },
+  { words: ["주어", "서술어", "목적어", "보어", "관형어", "부사어", "독립어"] },
+  { words: ["주성분", "부속 성분", "독립 성분"] },
+  { words: ["교체", "탈락", "첨가", "축약"], when: /음운|탈락|불규칙/ },   // '절을 교체', 조사 '까지(첨가)' 같은 다른 뜻은 빼려고
+];
+function groupMates(a, q) {
+  const g = GROUPS.find(g => g.words.some(w => norm(w) === norm(a)) && (!g.when || g.when.test(q.text)));
+  return g ? g.words.filter(w => norm(w) !== norm(a)) : [];
+}
 function makeChoices(q, all) {        // 빈칸마다 보기 세트 하나
   const used = new Set(q.answers.map(norm));
   const pool = nearPool(all, all.indexOf(q), used);
   return q.answers.map(a => {
     const n = CHOICE_MIN + Math.floor(Math.random() * (CHOICE_MAX - CHOICE_MIN + 1));   // 5~7개
-    const wrong = shuffle(pool).slice(0, n - 1);
+    const mates = shuffle(groupMates(a, q)).slice(0, n - 1), have = new Set(mates.map(norm));
+    const wrong = [...mates, ...shuffle(pool).filter(w => !have.has(norm(w))).slice(0, n - 1 - mates.length)];
     return shuffle([a, ...wrong]);
   });
 }
