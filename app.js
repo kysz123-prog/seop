@@ -188,6 +188,7 @@ const GROUPS = [
   { words: ["주성분", "부속 성분", "독립 성분"] },
   { words: ["필수적 부사어", "수의적 부사어"] },
   { words: ["관형사", "관형어"] },
+  { words: ["관형사", "형용사의 관형사형", "동사의 관형사형", "용언의 관형사형"] },
   { words: ["부사", "부사어"] },
   { words: ["보어", "목적어"] },
 
@@ -382,15 +383,19 @@ function areEquivBlanks(q, i, j) {
   if (/\(.*?\)/.test(mid)) return false;
   if (/[은는이가]\s*결합한 것은/.test(mid)) return false;
 
+  // 따옴표/기호 제거한 clean 문자열
+  const midClean = mid.replace(/['"‘’“”,·/]/g, "").trim();
+
   // 4. 대등 나열 패턴
+  // - 접속 조사 나열 (예: "와", "과", "및", "또는", 따옴표 붙은 "와 '")
+  if (/^(와|과|및|또는)$/.test(midClean)) return true;
   // - 쉼표/슬래시/가운뎃점 나열 (예: ", ", ", 수식언, ", " / ")
   if (/^([,·/]\s*([가-힣]+[,·/]\s*)*)$/.test(mid)) return true;
-  // - 접속 조사 나열 (예: "와 ", "과 ", "및 ", "또는 ")
   if (/^(와|과|및|또는|,|\/|·)\s*$/.test(mid)) return true;
   if (/^[가-힣]+(와|과|및|,|\/)\s*$/.test(mid)) return true;
   // - 문장 끝부분에 대등 나열 구문이 있고 mid가 단순 조사/구분자인 경우
   const after = parts[maxI + 1] || "";
-  if (/등에도 붙는다|등으로|로 나뉜다|로 분류|포함되어 있으므로|쓰일 때도 있다/.test(after)) {
+  if (/등에도 붙는다|등으로|로 나뉜다|로 분류|포함되어 있으므로|쓰일 때도 있다|모두 쓰이므로/.test(after)) {
     if (!/[은는이가를]\s+[가-힣]+[은는]/.test(mid) && mid.length <= 15) return true;
   }
 
