@@ -1,6 +1,6 @@
 // ===== 설정 (여기만 고치면 됨) =====
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxT5-lAhEZetpBkVQdGbriYU2ClTeGtx9-WRPFuG13NzObmqOP5IzRPpEX0-KajcGU2TA/exec";                                // 구글 앱스 스크립트 웹앱 주소 (비워 두면 전송 안 함)
-const MINUTES = { 100: 25, 200: 50, 300: 75 };        // 빈칸 수별 제한 시간(분) — 100개당 25분 (난이도 상향)
+const MINUTES = { 50: 17, 100: 25, 200: 50, 300: 75 };        // 50개 17분, 100개당 25분 (난이도 상향)
 const PASS = { basic: 80, adv: 80 };                   // 통과 점수(100점 만점) - 80점으로 엄격화
 const IMG = { pass: "img/pass.webp", fail: "img/fail.webp" };
 Object.values(IMG).forEach(s => { new Image().src = s; });   // 결과 사진 미리 불러오기
@@ -18,7 +18,7 @@ const SAMPLE = { basic: [
 SAMPLE.adv = SAMPLE.basic;
 
 // ===== 상태 =====
-let DATA = null, level = "basic", count = 100;
+let DATA = null, level = "basic", count = 50;
 let quiz = [], idx = 0, bi = 0, answers = [], startedAt = 0, timerId = null, deadline = 0, finished = false;
 const $ = id => document.getElementById(id);
 
