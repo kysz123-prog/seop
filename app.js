@@ -315,6 +315,101 @@ $("next").addEventListener("click", () => {
 });
 $("prev").addEventListener("click", () => { if (idx > 0 && !finished) go(-1); });
 
+// 두 빈칸 i, j가 문항 q 내에서 대등한 관계인지 판별 (순서 바뀌어도 정답 처리)
+function areEquivBlanks(q, i, j) {
+  if (i === j) return false;
+  const a1 = q.answers[i], a2 = q.answers[j];
+  if (!a1 || !a2) return false;
+
+  // 1. 같은 GROUPS 범주에 속해야 함
+  const inSameGroup = GROUPS.some(g =>
+    g.words.some(w => norm(w) === norm(a1)) &&
+    g.words.some(w => norm(w) === norm(a2)) &&
+    (!g.when || g.when.test(q.text))
+  );
+  if (!inSameGroup) return false;
+
+  // 2. 텍스트 분할 및 위치 검사
+  const parts = q.text.split("{{blank}}");
+  if (parts.length !== q.answers.length + 1) return false;
+
+  const minI = Math.min(i, j), maxI = Math.max(i, j);
+  let mid = "";
+  for (let k = minI + 1; k <= maxI; k++) mid += parts[k];
+  mid = mid.trim();
+
+  // 3. 줄바꿈, 탭, 콜론(:), 괄호 설명 ( ), 개별 조건이 있으면 개별 정의이므로 대등하지 않음
+  if (/[\n\t:]/.test(mid)) return false;
+  if (/\(.*?\)/.test(mid)) return false;
+  if (/[은는이가]\s*결합한 것은/.test(mid)) return false;
+
+  // 4. 대등 나열 패턴
+  // - 쉼표/슬래시/가운뎃점 나열 (예: ", ", ", 수식언, ", " / ")
+  if (/^([,·/]\s*([가-힣]+[,·/]\s*)*)$/.test(mid)) return true;
+  // - 접속 조사 나열 (예: "와 ", "과 ", "및 ", "또는 ")
+  if (/^(와|과|및|또는|,|\/|·)\s*$/.test(mid)) return true;
+  if (/^[가-힣]+(와|과|및|,|\/)\s*$/.test(mid)) return true;
+  // - 문장 끝부분에 대등 나열 구문이 있고 mid가 단순 조사/구분자인 경우
+  const after = parts[maxI + 1] || "";
+  if (/등에도 붙는다|등으로|로 나뉜다|로 분류|포함되어 있으므로|쓰일 때도 있다/.test(after)) {
+    if (!/[은는이가를]\s+[가-힣]+[은는]/.test(mid) && mid.length <= 15) return true;
+  }
+
+  return false;
+}
+
+// 문항 q에 대해 학생의 답변 picks 채점 (대등 빈칸은 순서 바뀌어도 유연하게 정답 처리)
+function gradeQuestion(q, picks) {
+  const n = q.answers.length;
+  const ok = new Array(n).fill(false);
+
+  // 대등 클러스터 생성 (Union-Find)
+  const parent = Array.from({ length: n }, (_, i) => i);
+  const find = x => (parent[x] === x ? x : (parent[x] = find(parent[x])));
+  const union = (x, y) => { parent[find(x)] = find(y); };
+
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      if (areEquivBlanks(q, i, j)) union(i, j);
+    }
+  }
+
+  const clusters = new Map();
+  for (let i = 0; i < n; i++) {
+    const root = find(i);
+    if (!clusters.has(root)) clusters.set(root, []);
+    clusters.get(root).push(i);
+  }
+
+  // 클러스터별 채점
+  clusters.forEach(indices => {
+    const unpickedAnswers = [];
+    const unsolvedIndices = [];
+    indices.forEach(idx => {
+      const p = picks[idx], a = q.answers[idx];
+      if (p !== null && norm(p) === norm(a)) {
+        ok[idx] = true;
+      } else {
+        unpickedAnswers.push(a);
+        unsolvedIndices.push(idx);
+      }
+    });
+
+    unsolvedIndices.forEach(idx => {
+      const p = picks[idx];
+      if (p !== null) {
+        const matchIdx = unpickedAnswers.findIndex(a => norm(a) === norm(p));
+        if (matchIdx >= 0) {
+          ok[idx] = true;
+          unpickedAnswers.splice(matchIdx, 1);
+        }
+      }
+    });
+  });
+
+  return ok;
+}
+
 // ===== 결과 =====
 function finish(timedOut) {
   if (finished) return; finished = true; clearInterval(timerId);
@@ -325,7 +420,7 @@ function finish(timedOut) {
   quiz.forEach(({ q }, i) => {
     const picks = answers[i];
     total += q.answers.length; solved += picks.filter(p => p !== null).length;
-    const ok = q.answers.map((a, b) => picks[b] !== null && norm(picks[b]) === norm(a));
+    const ok = gradeQuestion(q, picks);
     right += ok.filter(Boolean).length;
     if (picks.some((p, b) => p !== null && !ok[b])) wrong.push({ q, ok, picks });
   });
@@ -340,14 +435,14 @@ function finish(timedOut) {
   $("wrongTitle").hidden = !wrong.length;
   $("sub").textContent = `맞힌 빈칸 ${right} / ${total} · ${LEVEL_NAME[level]} 통과 ${PASS[level]}점 · ${fmt(sec)}` + (timedOut ? ` · 시간 종료 (미응시 ${total - solved})` : "");
   
-  // 내가 답한 오답 ➔ 정답 비교 표시
+  // 내가 답한 오답 ➔ 정답 비교 표시 (맞힌 빈칸은 학생 선택 그대로 인정)
   $("wrongList").innerHTML = wrong.length
     ? wrong.map(({ q, ok, picks }) => {
         let n = 0;
         const t = layout(q.text).replace(/\{\{blank\}\}/g, () => {
           const b = n++, isOk = ok[b], pick = picks[b], ans = q.answers[b];
           if (isOk) {
-            return `<b class="good">${esc(ans)}</b>`;
+            return `<b class="good">${esc(pick || ans)}</b>`;
           } else {
             return `<span class="wrong-box"><b class="my-pick">${esc(pick || "미응시")}</b><span class="arrow">➔</span><b class="ans">${esc(ans)}</b></span>`;
           }
@@ -419,7 +514,7 @@ function renderNotes() {
     const t = layout(item.text).replace(/\{\{blank\}\}/g, () => {
       const b = n++, isOk = item.ok[b], pick = item.picks[b], ans = item.answers[b];
       if (isOk) {
-        return `<b class="good">${esc(ans)}</b>`;
+        return `<b class="good">${esc(pick || ans)}</b>`;
       } else {
         return `<span class="wrong-box"><b class="my-pick">${esc(pick || "미응시")}</b><span class="arrow">➔</span><b class="ans">${esc(ans)}</b></span>`;
       }
