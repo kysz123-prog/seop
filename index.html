@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>언니들 파이팅 💚</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <main>
@@ -14,21 +14,27 @@
       <div class="logo">💚</div>
       <h1>언니들 파이팅 💚</h1>
       <p class="lead">문단을 읽고 빈칸에 알맞은 말을 고르세요.</p>
+      <div id="resume" class="resume" hidden>
+        <p id="resumeInfo"></p>
+        <button id="btnResume" class="primary" type="button">이어서 풀기</button>
+        <button id="btnDiscard" class="btn-text" type="button">버리고 새로 시작</button>
+      </div>
       <label class="lbl">이름</label>
       <input id="name" type="text" placeholder="이름을 입력하세요" autocomplete="off" maxlength="20">
       <label class="lbl">난이도</label>
       <div class="seg" id="levelGroup">
-        <button data-level="basic">기본형</button>
+        <button data-level="basic" class="on">기본형</button>
         <button data-level="adv">심화형</button>
       </div>
       <label class="lbl">빈칸 수</label>
       <div class="seg" id="countGroup">
-        <button data-count="100">100개</button>
-        <button data-count="300">300개</button>
-        <button data-count="500">500개</button>
+        <button data-count="100">100개 (25분)</button>
+        <button data-count="200">200개 (50분)</button>
+        <button data-count="300">300개 (75분)</button>
       </div>
       <p id="info" class="note"></p>
       <button id="go" class="primary" disabled>시작하기</button>
+      <button id="btnNotes" class="btn-sub" type="button">📑 오답노트 (<span id="notesBadge">0</span>)</button>
     </div>
   </section>
 
@@ -66,10 +72,20 @@
       <h2 id="wrongTitle">틀린 문장</h2>
       <div id="wrongList"></div>
       <button id="again" class="primary">다시 풀기</button>
+      <button id="btnResultNotes" class="btn-sub" type="button">📑 오답노트 보러가기</button>
     </div>
   </section>
+
+  <section id="notes" class="view" hidden>
+    <div class="notes-header">
+      <button id="btnNotesBack" class="btn-back" type="button">← 돌아가기</button>
+      <h2>📑 내 오답노트</h2>
+      <button id="btnClearNotes" class="btn-text" type="button">비우기</button>
+    </div>
+    <div id="notesList"></div>
+  </section>
 </main>
-<script src="questions.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="questions.js?v=5"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

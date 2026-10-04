@@ -90,3 +90,27 @@ b.good { color: var(--g-d); font-weight: 700; }
 #verdict.fail { color: var(--red); }
 .is-fail #ring { background: conic-gradient(var(--red) calc(var(--p) * 1%), var(--line) 0); }
 .is-fail #score { color: var(--red); }
+
+/* 오답 표시 및 비교 */
+.wrong-box { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 8px; background: #fff0f0; border: 1px solid #ffd0d0; margin: 0 2px; vertical-align: middle; }
+.my-pick { color: var(--red); font-size: 0.9em; text-decoration: line-through; opacity: 0.85; font-weight: 700; }
+.arrow { color: #888; font-size: 0.8em; margin: 0 2px; }
+b.ans { color: #d92323; font-weight: 800; }
+b.good { color: var(--g-d); font-weight: 700; }
+
+/* 오답노트 버튼 & 뷰 */
+.btn-sub { width: 100%; font-size: 15px; font-weight: 700; padding: 13px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; color: var(--sub); cursor: pointer; margin-top: 10px; transition: .15s; }
+.btn-sub:hover { background: #f0f4f2; color: var(--ink); border-color: #cbd8d1; }
+.notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 10px 0; }
+.notes-header h2 { margin: 0; font-size: 22px; font-weight: 800; color: var(--ink); }
+.notes-meta { font-size: 13px; color: var(--sub); font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.btn-text { background: none; border: 0; color: var(--red); font-size: 13px; font-weight: 600; cursor: pointer; padding: 4px 8px; }
+.btn-text:hover { text-decoration: underline; }
+.btn-back { padding: 8px 16px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--sub); font-weight: 700; cursor: pointer; font-size: 14px; }
+.btn-back:hover { background: #f0f4f2; color: var(--ink); }
+
+/* 풀던 문제 이어 풀기 */
+.resume { background: var(--g-s); border: 1.5px solid var(--g-m); border-radius: 14px; padding: 16px; margin-bottom: 22px; text-align: center; }
+.resume p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink); }
+.resume button.primary { margin-top: 12px; }
+.resume .btn-text { margin-top: 8px; }
