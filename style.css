@@ -63,7 +63,9 @@ html, body { overflow-x: hidden; }
 #choices button.sel { background: var(--g); border-color: var(--g); color: #fff; }
 .nav { display: flex; gap: 8px; margin-top: 12px; }
 .nav button { margin-top: 0; }
-#prev { flex: 0 0 30%; font-size: 17px; font-weight: 700; padding: 16px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; color: var(--sub); cursor: pointer; }
+.nav button { flex: 1; }
+#next[hidden] { display: none; }
+#prev { font-size: 18px; font-weight: 700; padding: 18px; border: 2px solid var(--g); border-radius: 14px; background: #fff; color: var(--g-d); cursor: pointer; }
 #prev:disabled { opacity: .4; cursor: default; }
 
 /* 결과 */

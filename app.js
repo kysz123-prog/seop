@@ -151,6 +151,8 @@ function renderQ() {
     b.addEventListener("click", () => choose(c)); box.appendChild(b);
   });
   $("prev").disabled = idx === 0;
+  const last = idx + 1 >= quiz.length;   // '다음'은 안 보임: 마지막 문단의 '제출', 또는 '이전'으로 돌아와 다 채워진 문단에서만 보임
+  $("next").hidden = !last && picks.includes(null);
   $("next").disabled = picks.includes(null);
   $("next").textContent = idx + 1 >= quiz.length ? "제출" : "다음";
 }
@@ -165,7 +167,7 @@ function choose(c) {                  // 같은 보기를 다시 누르면 취�
   }
   renderQ();
   clearTimeout(autoId);                 // 문단의 빈칸을 다 채우면 잠깐 보여 준 뒤 다음 문단으로(마지막 문단은 '제출'을 직접 누름)
-  if (!picks.includes(null) && idx + 1 < quiz.length) { const at = idx; autoId = setTimeout(() => { if (idx === at && !finished) go(1); }, 400); }
+  if (!picks.includes(null) && idx + 1 < quiz.length) { $("next").hidden = true; const at = idx; autoId = setTimeout(() => { if (idx === at && !finished) go(1); }, 400); }
 }
 let autoId = null;
 function go(d) {                        // d=1 다음 문단, d=-1 이전 문단
