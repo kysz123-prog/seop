@@ -67,7 +67,9 @@ function layout(t) {
         if (cell.skip) continue;
         const attr = (cell.rowspan > 1 ? ` rowspan="${cell.rowspan}"` : "") +
                      (cell.colspan > 1 ? ` colspan="${cell.colspan}"` : "");
-        html += `<${tag}${attr}>${cell.text}</${tag}>`;
+        const formatted = cell.text.replace(/(.)\s*•\s*/g, "$1<br>• ");
+        const alignStyle = cell.text.includes("•") ? ' style="text-align:left; padding-left:10px;"' : '';
+        html += `<${tag}${attr}${alignStyle}>${formatted}</${tag}>`;
       }
       html += "</tr>";
     }
@@ -77,7 +79,7 @@ function layout(t) {
   };
   for (const l of esc(t).split("\n")) {
     if (l.includes("\t")) rows.push(l);
-    else { flush(); out.push(`<p${isHead(l) ? ' class="h"' : ""}>${l}</p>`); }
+    else { flush(); out.push(`<p${isHead(l) ? ' class="h"' : ""}>${l.replace(/(.)\s*•\s*/g, "$1<br>• ")}</p>`); }
   }
   flush();
   return out.join("");
