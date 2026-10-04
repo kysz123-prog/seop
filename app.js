@@ -121,7 +121,7 @@ function startQuiz() {
   const all = DATA[level];
   quiz = []; let sum = 0;                                       // 빈칸이 고른 개수 이상 될 때까지 문단을 랜덤으로 담음
   for (const q of shuffle(all)) { if (sum >= count) break; quiz.push({ q, choices: makeChoices(q, all) }); sum += q.answers.length; }
-  idx = 0; bi = 0; answers = quiz.map(x => x.q.answers.map(() => null)); finished = false;
+  clearTimeout(autoId); idx = 0; bi = 0; answers = quiz.map(x => x.q.answers.map(() => null)); finished = false;
   startedAt = Date.now(); deadline = startedAt + (MINUTES[count] || 30) * 60000;
   show("quiz"); renderQ();
   clearInterval(timerId); timerId = setInterval(tick, 500); tick();
@@ -150,6 +150,7 @@ function renderQ() {
     if (c === picks[bi]) b.className = "sel";
     b.addEventListener("click", () => choose(c)); box.appendChild(b);
   });
+  $("prev").disabled = idx === 0;
   $("next").disabled = picks.includes(null);
   $("next").textContent = idx + 1 >= quiz.length ? "제출" : "다음";
 }
@@ -163,6 +164,14 @@ function choose(c) {                  // 같은 보기를 다시 누르면 취�
     bi = nx >= 0 ? nx : any >= 0 ? any : bi;   // 다음 빈 빈칸으로 이동
   }
   renderQ();
+  clearTimeout(autoId);                 // 문단의 빈칸을 다 채우면 잠깐 보여 준 뒤 다음 문단으로(마지막 문단은 '제출'을 직접 누름)
+  if (!picks.includes(null) && idx + 1 < quiz.length) { const at = idx; autoId = setTimeout(() => { if (idx === at && !finished) go(1); }, 400); }
+}
+let autoId = null;
+function go(d) {                        // d=1 다음 문단, d=-1 이전 문단
+  clearTimeout(autoId);
+  idx += d; const e = answers[idx].indexOf(null); bi = e >= 0 ? e : 0;
+  renderQ(); window.scrollTo(0, 0);
 }
 $("sentence").addEventListener("click", e => {   // 빈칸을 누르면 그 빈칸 선택, 채운 빈칸을 다시 누르면 취소
   const s = e.target.closest(".blank"); if (!s || finished) return;
@@ -172,8 +181,9 @@ $("sentence").addEventListener("click", e => {   // 빈칸을 누르면 그 빈�
 });
 $("next").addEventListener("click", () => {
   if (idx + 1 >= quiz.length) return finish(false);
-  idx++; bi = 0; renderQ(); window.scrollTo(0, 0);
+  go(1);
 });
+$("prev").addEventListener("click", () => { if (idx > 0 && !finished) go(-1); });
 
 // ===== 결과 =====
 function finish(timedOut) {

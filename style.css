@@ -61,7 +61,10 @@ html, body { overflow-x: hidden; }
 #choices button { font-size: 16px; font-weight: 600; padding: 13px 10px; background: #fff; color: var(--ink); border: 1.5px solid var(--line); border-radius: 12px; cursor: pointer; transition: .12s; word-break: keep-all; }
 #choices button:hover { border-color: var(--g); color: var(--g-d); }
 #choices button.sel { background: var(--g); border-color: var(--g); color: #fff; }
-#next { margin-top: 12px; }
+.nav { display: flex; gap: 8px; margin-top: 12px; }
+.nav button { margin-top: 0; }
+#prev { flex: 0 0 30%; font-size: 17px; font-weight: 700; padding: 16px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; color: var(--sub); cursor: pointer; }
+#prev:disabled { opacity: .4; cursor: default; }
 
 /* 결과 */
 .score-card { margin-top: 32px; padding: 32px 20px 24px; text-align: center; }
