@@ -49,13 +49,21 @@
   </section>
 
   <section id="result" class="view" hidden>
-    <div class="card score-card">
-      <div id="ring"><div id="score"></div></div>
-      <p id="sub" class="note"></p>
+    <div id="suspense" class="card suspense">
+      <div class="beat">💚</div>
+      <p>두근두근… 채점 중</p>
     </div>
-    <h2 id="wrongTitle">틀린 문장</h2>
-    <div id="wrongList"></div>
-    <button id="again" class="primary">다시 풀기</button>
+    <div id="reveal" hidden>
+      <div class="card score-card">
+        <img id="resultImg" alt="">
+        <div id="verdict"></div>
+        <div id="ring"><div id="score"></div></div>
+        <p id="sub" class="note"></p>
+      </div>
+      <h2 id="wrongTitle">틀린 문장</h2>
+      <div id="wrongList"></div>
+      <button id="again" class="primary">다시 풀기</button>
+    </div>
   </section>
 </main>
 <script src="questions.js"></script>

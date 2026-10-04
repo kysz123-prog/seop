@@ -72,3 +72,16 @@ h2 { font-size: 18px; margin: 32px 4px 12px; }
 #wrongList .passage { font-size: 16px; }
 b.ans { color: var(--red); font-weight: 800; }
 b.good { color: var(--g-d); font-weight: 700; }
+
+/* 두근두근 + 통과/실패 */
+.suspense { margin-top: 18vh; padding: 48px 20px; text-align: center; font-size: 18px; font-weight: 700; color: var(--g-d); }
+.beat { font-size: 72px; animation: beat .6s ease-in-out infinite; }
+@keyframes beat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.25); } 60% { transform: scale(.95); } }
+#reveal { animation: pop .5s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes pop { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }
+#resultImg { display: block; max-width: 100%; max-height: 300px; margin: 0 auto 8px; border-radius: 16px; }
+#verdict { font-size: 26px; font-weight: 800; margin: 4px 0 18px; }
+#verdict.pass { color: var(--g); }
+#verdict.fail { color: var(--red); }
+.is-fail #ring { background: conic-gradient(var(--red) calc(var(--p) * 1%), var(--line) 0); }
+.is-fail #score { color: var(--red); }

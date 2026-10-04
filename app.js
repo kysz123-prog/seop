@@ -1,6 +1,9 @@
 // ===== 설정 (여기만 고치면 됨) =====
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxT5-lAhEZetpBkVQdGbriYU2ClTeGtx9-WRPFuG13NzObmqOP5IzRPpEX0-KajcGU2TA/exec";                                // 구글 앱스 스크립트 웹앱 주소 (비워 두면 전송 안 함)
-const MINUTES = { 100: 10, 300: 20, 500: 30 };         // 문항 수별 제한 시간(분)
+const MINUTES = { 100: 30, 300: 90, 500: 150 };        // 빈칸 수별 제한 시간(분) — 100개당 30분
+const PASS = { basic: 80, adv: 70 };                   // 통과 점수(100점 만점)
+const IMG = { pass: "img/pass.webp", fail: "img/fail.webp" };
+Object.values(IMG).forEach(s => { new Image().src = s; });   // 결과 사진 미리 불러오기
 const CHOICE_MIN = 5, CHOICE_MAX = 7;                  // 보기 개수 범위
 const LEVEL_NAME = { basic: "기본형", adv: "심화형" };
 
@@ -170,10 +173,15 @@ function finish(timedOut) {
     if (picks.some((p, b) => p !== null && !ok[b])) wrong.push({ q, ok, picks });
   });
   const sec = Math.round((Date.now() - startedAt) / 1000);
-  $("score").innerHTML = `<div>${right}<small>/ ${total}</small></div>`;
-  $("ring").style.setProperty("--p", total ? Math.round((right / total) * 100) : 0);
+  const pct = total ? Math.round((right / total) * 100) : 0, passed = pct >= PASS[level];
+  $("score").innerHTML = `<div>${pct}<small>점</small></div>`;
+  $("ring").style.setProperty("--p", pct);
+  $("resultImg").src = passed ? IMG.pass : IMG.fail;
+  $("verdict").textContent = passed ? "통과! 🎉" : "아쉽다… 다시 도전!";
+  $("verdict").className = passed ? "pass" : "fail";
+  $("reveal").classList.toggle("is-fail", !passed);
   $("wrongTitle").hidden = !wrong.length;
-  $("sub").textContent = `${LEVEL_NAME[level]} · ${fmt(sec)}` + (timedOut ? ` · 시간 종료 (미응시 ${total - solved})` : "");
+  $("sub").textContent = `맞힌 빈칸 ${right} / ${total} · ${LEVEL_NAME[level]} 통과 ${PASS[level]}점 · ${fmt(sec)}` + (timedOut ? ` · 시간 종료 (미응시 ${total - solved})` : "");
   $("wrongList").innerHTML = wrong.length
     ? wrong.map(({ q, ok, picks }) => {
         let n = 0;
@@ -182,6 +190,8 @@ function finish(timedOut) {
       }).join("")
     : '<p class="note">틀린 문제가 없습니다.</p>';
   show("result"); window.scrollTo(0, 0);
+  $("suspense").hidden = false; $("reveal").hidden = true;           // 2초 두근두근 후 공개
+  setTimeout(() => { $("suspense").hidden = true; $("reveal").hidden = false; }, 2000);
   sendResult({
     time: stamp(new Date()), name: $("name").value.trim(), level: LEVEL_NAME[level],
     total, score: right, solved, wrong: wrong.map(w => w.q.id).join(","), seconds: sec, timedOut: timedOut ? "Y" : "N"
